@@ -1,5 +1,5 @@
 
 ```
 cd reflect/repo
-git submodule add git@github.com/someusername/someproject.git
+git submodule add git@github.com:someusername/someproject.git
 ```

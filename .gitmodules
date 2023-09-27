@@ -10,3 +10,6 @@
 [submodule "repo/reflect"]
 	path = repo/reflect
 	url = git@github.com:Rconybea/reflect.git
+[submodule "repo/xo-cmake"]
+	path = repo/xo-cmake
+	url = git@github.com:Rconybea/xo-cmake.git

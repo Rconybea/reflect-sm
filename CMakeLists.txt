@@ -28,10 +28,12 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # always write compile_commands.json
+# (this does not seem to apply to external projects)
+#
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 if(NOT CMAKE_INSTALL_RPATH)
-    set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE STIRNG "runpath in installed libraries/executables")
+    set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib CACHE STRING "runpath in installed libraries/executables")
 endif()
 
 message("CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
@@ -146,6 +148,7 @@ set_target_properties(
 
 add_library(indentlog INTERFACE IMPORTED)
 #set_property(TARGET indentlog PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/local/lib/libindentlog.so)
+add_dependencies(project_indentlog project_xo_cmake)
 add_dependencies(indentlog project_indentlog)
 
 # runs ctest in indentlog build dir
@@ -170,6 +173,7 @@ set_target_properties(
 )
 
 add_library(subsys INTERFACE IMPORTED)
+add_dependencies(project_subsys project_xo_cmake)
 add_dependencies(subsys project_subsys)
 
 # runs ctest in subsys build dir

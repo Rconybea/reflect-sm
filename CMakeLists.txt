@@ -143,7 +143,7 @@ externalproject_add(
 )
 set_target_properties(
     project_indentlog
-    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/indentlog;${PROJECT_BINARY_DIR}/local/include/indentlog;${PROJECT_BINARY_DIR}/local/bin/indentlog;${PROJECT_BINARY_DIR}/local/lib/cmake/indentlog"
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/indentlog;${PROJECT_BINARY_DIR}/local/include/xo/indentlog;${PROJECT_BINARY_DIR}/local/bin/indentlog;${PROJECT_BINARY_DIR}/local/lib/cmake/indentlog"
 )
 
 add_library(indentlog INTERFACE IMPORTED)
@@ -169,7 +169,7 @@ externalproject_add(
 )
 set_target_properties(
     project_subsys
-    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/subsys;${PROJECT_BINARY_DIR}/local/include/subsys;${PROJECT_BINARY_DIR}/local/lib/cmake/subsys"
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/subsys;${PROJECT_BINARY_DIR}/local/include/xo/subsys;${PROJECT_BINARY_DIR}/local/lib/cmake/subsys"
 )
 
 add_library(subsys INTERFACE IMPORTED)
@@ -203,7 +203,7 @@ externalproject_add(
 )
 set_target_properties(
     project_refcnt
-    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/refcnt;${PROJECT_BINARY_DIR}/local/include/refcnt;${PROJECT_BINARY_DIR}/local/include/cxxutil;${PROJECT_BINARY_DIR}/local/lib/cmake/refcnt"
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/refcnt;${PROJECT_BINARY_DIR}/local/include/xo/refcnt;${PROJECT_BINARY_DIR}/local/include/cxxutil;${PROJECT_BINARY_DIR}/local/lib/cmake/refcnt"
 )
 
 add_library(refcnt SHARED IMPORTED)
@@ -237,7 +237,7 @@ externalproject_add(
 )
 set_target_properties(
     project_reflect
-    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/reflect;${PROJECT_BINARY_DIR}/local/include/reflect;${PROJECT_BINARY_DIR}/local/lib/cmake/reflect"
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/reflect;${PROJECT_BINARY_DIR}/local/include/xo/reflect;${PROJECT_BINARY_DIR}/local/lib/cmake/reflect"
 )
 
 add_library(reflect SHARED IMPORTED)
@@ -249,3 +249,74 @@ add_dependencies(project_reflect project_refcnt)
 
 # runs ctest in reflect build dir
 add_test(NAME reflect COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/reflect)
+
+# ----- randomgen -----
+
+# CMAKE_ARGS
+#   CMAKE_BUILD_TYPE propagate Debug/Release build type
+#   CODE_COVERAGE propagate code coverage setting
+#   CMAKE_PREFIX_PATH path for support cmake files of dependencies (needed for find_package() to work)
+#   CMAKE_INSTALL_PREFIX install subproject here
+# SOURCE_DIR  -- where to find already established source code
+# BINARY_DIR  -- run build for external project here
+# INSTALL_DIR -- (temporarily) install external project here
+#
+externalproject_add(
+    project_randomgen
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/repo/randomgen
+    BINARY_DIR ${PROJECT_BINARY_DIR}/ext/randomgen
+    INSTALL_DIR ${PROJECT_BINARY_DIR}/local
+    CMAKE_ARGS -DCMAKE_MODULE_PATH=<INSTALL_DIR>/share/cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCODE_COVERAGE=${CODE_COVERAGE} -DCMAKE_PREFIX_PATH=<INSTALL_DIR> -DCMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH} -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
+    TEST_BEFORE_INSTALL True
+)
+set_target_properties(
+    project_randomgen
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/randomgen;${PROJECT_BINARY_DIR}/local/include/xo/randomgen;${PROJECT_BINARY_DIR}/local/lib/cmake/randomgen"
+)
+
+add_library(randomgen SHARED IMPORTED)
+#set_property(TARGET randomgen PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/local/lib/librandomgen.so)
+add_dependencies(randomgen project_randomgen)
+add_dependencies(project_randomgen project_indentlog)
+add_dependencies(project_randomgen project_xo_cmake)
+#add_dependencies(project_reflect project_subsys)
+
+# runs ctest in randomgen build dir
+#add_test(NAME randomgen COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/randomgen)
+
+# ----- ordinaltree -----
+
+# CMAKE_ARGS
+#   CMAKE_BUILD_TYPE propagate Debug/Release build type
+#   CODE_COVERAGE propagate code coverage setting
+#   CMAKE_PREFIX_PATH path for support cmake files of dependencies (needed for find_package() to work)
+#   CMAKE_INSTALL_PREFIX install subproject here
+# SOURCE_DIR  -- where to find already established source code
+# BINARY_DIR  -- run build for external project here
+# INSTALL_DIR -- (temporarily) install external project here
+#
+externalproject_add(
+    project_ordinaltree
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/repo/xo-ordinaltree
+    BINARY_DIR ${PROJECT_BINARY_DIR}/ext/ordinaltree
+    INSTALL_DIR ${PROJECT_BINARY_DIR}/local
+    CMAKE_ARGS -DCMAKE_MODULE_PATH=<INSTALL_DIR>/share/cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCODE_COVERAGE=${CODE_COVERAGE} -DCMAKE_PREFIX_PATH=<INSTALL_DIR> -DCMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH} -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
+    TEST_BEFORE_INSTALL True
+)
+set_target_properties(
+    project_ordinaltree
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/ordinaltree;${PROJECT_BINARY_DIR}/local/include/xo/ordinaltree;${PROJECT_BINARY_DIR}/local/lib/cmake/ordinaltree"
+)
+
+add_library(ordinaltree SHARED IMPORTED)
+set_property(TARGET ordinaltree PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/local/lib/libordinaltree.so)
+add_dependencies(ordinaltree project_ordinaltree)
+add_dependencies(project_ordinaltree project_randomgen)
+add_dependencies(project_ordinaltree project_refcnt)
+
+# runs ctest in ordinaltree build dir
+add_test(NAME ordinaltree COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/ordinaltree)

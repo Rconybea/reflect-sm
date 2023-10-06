@@ -13,3 +13,9 @@
 [submodule "repo/xo-cmake"]
 	path = repo/xo-cmake
 	url = git@github.com:Rconybea/xo-cmake.git
+[submodule "repo/randomgen"]
+	path = repo/randomgen
+	url = git@github.com:Rconybea/randomgen.git
+[submodule "repo/xo-ordinaltree"]
+	path = repo/xo-ordinaltree
+	url = git@github.com:Rconybea/xo-ordinaltree.git

@@ -11,6 +11,8 @@ enable_language(CXX)
 # ----------------------------------------------------------------
 # unit test setup
 
+enable_testing()
+
 ###  copy from proj/reflect/CMakeLists.txt
 
 # ----------------------------------------------------------------
@@ -249,6 +251,40 @@ add_dependencies(project_reflect project_refcnt)
 
 # runs ctest in reflect build dir
 add_test(NAME reflect COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/reflect)
+
+# ----- printjson -----
+
+# CMAKE_ARGS
+#   CMAKE_BUILD_TYPE propagate Debug/Release build type
+#   CODE_COVERAGE propagate code coverage setting
+#   CMAKE_PREFIX_PATH path for support cmake files of dependencies (needed for find_package() to work)
+#   CMAKE_INSTALL_PREFIX install subproject here
+# SOURCE_DIR  -- where to find already established source code
+# BINARY_DIR  -- run build for external project here
+# INSTALL_DIR -- (temporarily) install external project here
+#
+externalproject_add(
+    project_printjson
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/repo/xo-printjson
+    BINARY_DIR ${PROJECT_BINARY_DIR}/ext/printjson
+    INSTALL_DIR ${PROJECT_BINARY_DIR}/local
+    CMAKE_ARGS -DCMAKE_MODULE_PATH=<INSTALL_DIR>/share/cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCODE_COVERAGE=${CODE_COVERAGE} -DCMAKE_PREFIX_PATH=<INSTALL_DIR> -DCMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH} -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
+    TEST_BEFORE_INSTALL True
+)
+set_target_properties(
+    project_printjson
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/printjson;${PROJECT_BINARY_DIR}/local/include/xo/printjson;${PROJECT_BINARY_DIR}/local/lib/cmake/printjson"
+)
+
+add_library(printjson SHARED IMPORTED)
+set_property(TARGET printjson PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/local/lib/libprintjson.so)
+add_dependencies(printjson project_printjson)
+add_dependencies(project_printjson project_reflect)
+
+# runs ctest in printjson build dir
+add_test(NAME printjson COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/printjson)
 
 # ----- randomgen -----
 

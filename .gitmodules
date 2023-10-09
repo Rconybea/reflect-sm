@@ -25,3 +25,6 @@
 [submodule "repo/xo-pyreflect"]
 	path = repo/xo-pyreflect
 	url = git@github.com:Rconybea/xo-pyreflect.git
+[submodule "repo/xo-printjson"]
+	path = repo/xo-printjson
+	url = git@github.com:Rconybea/xo-printjson.git

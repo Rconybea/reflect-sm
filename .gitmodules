@@ -19,3 +19,9 @@
 [submodule "repo/xo-ordinaltree"]
 	path = repo/xo-ordinaltree
 	url = git@github.com:Rconybea/xo-ordinaltree.git
+[submodule "repo/xo-pyutil"]
+	path = repo/xo-pyutil
+	url = git@github.com:rconybea/xo-pyutil
+[submodule "repo/xo-pyreflect"]
+	path = repo/xo-pyreflect
+	url = git@github.com:Rconybea/xo-pyreflect.git

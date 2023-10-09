@@ -203,7 +203,7 @@ externalproject_add(
 )
 set_target_properties(
     project_refcnt
-    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/refcnt;${PROJECT_BINARY_DIR}/local/include/xo/refcnt;${PROJECT_BINARY_DIR}/local/include/cxxutil;${PROJECT_BINARY_DIR}/local/lib/cmake/refcnt"
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/refcnt;${PROJECT_BINARY_DIR}/local/include/xo/refcnt;${PROJECT_BINARY_DIR}/local/include/xo/cxxutil;${PROJECT_BINARY_DIR}/local/lib/cmake/refcnt"
 )
 
 add_library(refcnt SHARED IMPORTED)
@@ -273,7 +273,7 @@ externalproject_add(
 )
 set_target_properties(
     project_randomgen
-    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/randomgen;${PROJECT_BINARY_DIR}/local/include/xo/randomgen;${PROJECT_BINARY_DIR}/local/lib/cmake/randomgen"
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/bin/randomgen;${PROJECT_BINARY_DIR}/ext/randomgen;${PROJECT_BINARY_DIR}/local/include/xo/randomgen;${PROJECT_BINARY_DIR}/local/lib/cmake/randomgen"
 )
 
 add_library(randomgen SHARED IMPORTED)
@@ -309,7 +309,7 @@ externalproject_add(
 )
 set_target_properties(
     project_ordinaltree
-    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/ordinaltree;${PROJECT_BINARY_DIR}/local/include/xo/ordinaltree;${PROJECT_BINARY_DIR}/local/lib/cmake/ordinaltree"
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/ordinaltree;${PROJECT_BINARY_DIR}/local/include/xo/ordinaltree;${PROJECT_BINARY_DIR}/local/lib/cmake/xo_ordinaltree"
 )
 
 add_library(ordinaltree SHARED IMPORTED)
@@ -320,3 +320,73 @@ add_dependencies(project_ordinaltree project_refcnt)
 
 # runs ctest in ordinaltree build dir
 add_test(NAME ordinaltree COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/ordinaltree)
+
+# ----- xo-pyutil -----
+
+# CMAKE_ARGS
+#   CMAKE_BUILD_TYPE propagate Debug/Release build type
+#   CODE_COVERAGE propagate code coverage setting
+#   CMAKE_PREFIX_PATH path for support cmake files of dependencies (needed for find_package() to work)
+#   CMAKE_INSTALL_PREFIX install subproject here
+# SOURCE_DIR  -- where to find already established source code
+# BINARY_DIR  -- run build for external project here
+# INSTALL_DIR -- (temporarily) install external project here
+#
+externalproject_add(
+    project_pyutil
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/repo/xo-pyutil
+    BINARY_DIR ${PROJECT_BINARY_DIR}/ext/pyutil
+    INSTALL_DIR ${PROJECT_BINARY_DIR}/local
+    CMAKE_ARGS -DCMAKE_MODULE_PATH=<INSTALL_DIR>/share/cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCODE_COVERAGE=${CODE_COVERAGE} -DCMAKE_PREFIX_PATH=<INSTALL_DIR> -DCMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH} -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
+    TEST_BEFORE_INSTALL True
+)
+set_target_properties(
+    project_pyutil
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/pyutil;${PROJECT_BINARY_DIR}/local/include/xo/pyutil;${PROJECT_BINARY_DIR}/local/lib/cmake/xo_pyutil"
+)
+
+add_library(pyutil SHARED IMPORTED)
+#set_property(TARGET pyutil PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/local/lib/libpyutil.so)
+add_dependencies(pyutil project_pyutil)
+add_dependencies(project_pyutil project_xo_cmake)
+#add_dependencies(project_pyutil project_refcnt)
+
+# runs ctest in pyutil build dir
+#add_test(NAME pyutil COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/pyutil)
+
+# ----- xo-pyreflect -----
+
+# CMAKE_ARGS
+#   CMAKE_BUILD_TYPE propagate Debug/Release build type
+#   CODE_COVERAGE propagate code coverage setting
+#   CMAKE_PREFIX_PATH path for support cmake files of dependencies (needed for find_package() to work)
+#   CMAKE_INSTALL_PREFIX install subproject here
+# SOURCE_DIR  -- where to find already established source code
+# BINARY_DIR  -- run build for external project here
+# INSTALL_DIR -- (temporarily) install external project here
+#
+externalproject_add(
+    project_pyreflect
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/repo/xo-pyreflect
+    BINARY_DIR ${PROJECT_BINARY_DIR}/ext/pyreflect
+    INSTALL_DIR ${PROJECT_BINARY_DIR}/local
+    CMAKE_ARGS -DCMAKE_MODULE_PATH=<INSTALL_DIR>/share/cmake -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCODE_COVERAGE=${CODE_COVERAGE} -DCMAKE_PREFIX_PATH=<INSTALL_DIR> -DCMAKE_INSTALL_RPATH=${CMAKE_INSTALL_RPATH} -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
+    TEST_BEFORE_INSTALL True
+)
+set_target_properties(
+    project_pyreflect
+    PROPERTIES ADDITIONAL_CLEAN_FILES "${PROJECT_BINARY_DIR}/ext/pyreflect;${PROJECT_BINARY_DIR}/local/include/xo/pyreflect;${PROJECT_BINARY_DIR}/local/lib/cmake/xo_pyreflect"
+)
+
+add_library(pyreflect SHARED IMPORTED)
+#set_property(TARGET pyreflect PROPERTY IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/local/lib/libpyreflect.so)
+add_dependencies(pyreflect project_pyreflect)
+add_dependencies(project_pyreflect project_xo_cmake)
+add_dependencies(project_pyreflect project_reflect)
+
+# runs ctest in pyreflect build dir
+#add_test(NAME pyreflect COMMAND ${PROJECT_SOURCE_DIR}/cmake/run-external-ctest ${PROJECT_BINARY_DIR}/ext/pyreflect)

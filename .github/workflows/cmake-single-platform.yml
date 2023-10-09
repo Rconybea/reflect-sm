@@ -23,6 +23,9 @@ jobs:
     - name: Install catch2
       run: sudo apt-get install -y catch2
 
+    - name: Install pybind11
+      run: sudo apt-get install -y pybind11
+
     - name: Checkout
       uses: actions/checkout@v3
       with:

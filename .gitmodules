@@ -34,3 +34,6 @@
 [submodule "repo/xo-callback"]
 	path = repo/xo-callback
 	url = git@github.com:Rconybea/xo-callback.git
+[submodule "repo/xo-webutil"]
+	path = repo/xo-webutil
+	url = git@github.com:Rconybea/xo-webutil.git

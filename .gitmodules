@@ -28,3 +28,9 @@
 [submodule "repo/xo-printjson"]
 	path = repo/xo-printjson
 	url = git@github.com:Rconybea/xo-printjson.git
+[submodule "repo/xo-reactor"]
+	path = repo/xo-reactor
+	url = git@github.com:Rconybea/xo-reactor.git
+[submodule "repo/xo-callback"]
+	path = repo/xo-callback
+	url = git@github.com:Rconybea/xo-callback.git
